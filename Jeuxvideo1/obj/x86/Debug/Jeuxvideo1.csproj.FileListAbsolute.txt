@@ -27,9 +27,12 @@ C:\Users\Client\Documents\GitHub\projet_monogame\Jeuxvideo1\bin\Windows\x86\Debu
 C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\projet_monogame\Jeuxvideo1\obj\x86\Debug\Jeuxvideo1.csprojResolveAssemblyReference.cache
 C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\projet_monogame\Jeuxvideo1\obj\x86\Debug\Jeuxvideo1.exe
 C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\projet_monogame\Jeuxvideo1\obj\x86\Debug\Jeuxvideo1.pdb
-C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\obj\x86\Debug\Jeuxvideo1.exe
-C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\obj\x86\Debug\Jeuxvideo1.pdb
+C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\bin\Windows\x86\Debug\Content\Background.png
+C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\bin\Windows\x86\Debug\Content\ennemi1.png
+C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\bin\Windows\x86\Debug\Content\explosion2.png
+C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\bin\Windows\x86\Debug\Content\projectile1.png
 C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\bin\Windows\x86\Debug\Content\spaceship.png
+C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\bin\Windows\x86\Debug\Content\Sounds\Laser.xnb
 C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\bin\Windows\x86\Debug\Jeuxvideo1.exe
 C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\bin\Windows\x86\Debug\Jeuxvideo1.pdb
 C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\bin\Windows\x86\Debug\MonoGame.Framework.dll
@@ -53,6 +56,5 @@ C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\bin\Wind
 C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\bin\Windows\x86\Debug\SharpDX.RawInput.xml
 C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\bin\Windows\x86\Debug\SharpDX.Direct3D9.xml
 C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\obj\x86\Debug\Jeuxvideo1.csprojResolveAssemblyReference.cache
-C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\bin\Windows\x86\Debug\Content\Background.png
-C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\bin\Windows\x86\Debug\Content\ennemi1.png
-C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\bin\Windows\x86\Debug\Content\projectile1.png
+C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\obj\x86\Debug\Jeuxvideo1.exe
+C:\Users\Client\Documents\GitHub\monogame-travail-1-Philip05\Jeuxvideo1\obj\x86\Debug\Jeuxvideo1.pdb

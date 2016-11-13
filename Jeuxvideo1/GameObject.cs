@@ -16,8 +16,10 @@ namespace Jeuxvideo1
         public Vector2 position;
         public Vector2 vitesse;
         public Random de1 = new Random();
-        public int positionennemi;
+        public int vieennemi = 5;
         public Rectangle RectCollision = new Rectangle();
+        public int canonennemi;
+        
 
         public Rectangle GetRect()
         {

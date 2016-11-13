@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SourceFile>C:/Users/Client/Documents/GitHub/monogame-travail-1-Philip05/Jeuxvideo1/Content/Sounds/Laser.mp3</SourceFile>
+  <SourceTime>2016-11-13T11:19:49.2902261-05:00</SourceTime>
+  <DestFile>C:/Users/Client/Documents/GitHub/monogame-travail-1-Philip05/Jeuxvideo1/Content/bin/Windows/Sounds/Laser.xnb</DestFile>
+  <DestTime>2016-11-13T11:26:20.7615321-05:00</DestTime>
+  <Importer>Mp3Importer</Importer>
+  <ImporterTime>2016-03-30T02:36:08-04:00</ImporterTime>
+  <Processor>SoundEffectProcessor</Processor>
+  <ProcessorTime>2016-03-30T02:36:08-04:00</ProcessorTime>
+  <Parameters>
+    <Key>Quality</Key>
+    <Value>Best</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
