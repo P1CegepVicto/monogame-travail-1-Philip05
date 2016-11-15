@@ -21,9 +21,8 @@ namespace Jeuxvideo2
         Gameobject2 projectilemario;
        Gameobject2 explosion;
         Gameobject2 explosion1;
-        Gameobject2 sonlaser;
         SoundEffect son;
-        SoundEffectInstance laser;
+        SoundEffectInstance sonlaser;
 
         //Game object: position, image
 
@@ -45,7 +44,7 @@ namespace Jeuxvideo2
 
             this.graphics.PreferredBackBufferWidth = graphics.GraphicsDevice.DisplayMode.Width;
             this.graphics.PreferredBackBufferHeight = graphics.GraphicsDevice.DisplayMode.Height;
-            this.graphics.ToggleFullScreen(); //ou this.apply.graphicschanges.
+            this.graphics.ApplyChanges(); //ou this.apply.graphicschanges.
             fenetre = new Rectangle(0, 0, graphics.GraphicsDevice.DisplayMode.Width, graphics.GraphicsDevice.DisplayMode.Height);
 
             base.Initialize();
@@ -82,6 +81,9 @@ namespace Jeuxvideo2
             explosion.estvivant = true;
             explosion1 = new Gameobject2();
             explosion1.estvivant = true;
+            //Sons
+            SoundEffect son;
+            SoundEffectInstance sonlaser;
 
            
 
@@ -93,9 +95,10 @@ namespace Jeuxvideo2
             background = Content.Load<Texture2D>("Background.png");
             explosion.sprite = Content.Load<Texture2D>("explosion2.png");
             explosion1.sprite = Content.Load<Texture2D>("explosion1.png");
-            projectilemario.sprite = Content.Load<Texture2D>("Projectilemario1.png");
-            //son = Content.Load<SoundEffect>("Sounds\\Laser.mp3");
-            //laser = son.CreateInstance();
+            projectilemario.sprite = Content.Load<Texture2D>("Projectilemario4.png");
+            son = Content.Load<SoundEffect>("Sons\\Laser");
+            sonlaser = son.CreateInstance();
+          
 
 
             //Charger un son chanson, il faut changer le type avec le nom entre guillemet.
@@ -120,9 +123,6 @@ namespace Jeuxvideo2
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-
-
-
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -149,13 +149,12 @@ namespace Jeuxvideo2
             {
                 Mario.position.Y += 8;
             }
+                
+                //Limiter espace de jeu
 
-            // Limiter espace de jeu
-
-            if (Mario.position.X < fenetre.Left)
+                if (Mario.position.X < fenetre.Left)
             {
-                Mario.position.X = fenetre.Left;
-
+                    Mario.position.X = fenetre.Left;
             }
 
             if (Mario.position.X > fenetre.Right - Mario.sprite.Width)
@@ -229,12 +228,8 @@ namespace Jeuxvideo2
 
                 if (explosion.position.Y > fenetre.Bottom || explosion1.position.Y > fenetre.Bottom)
                 {
-
                     Mario.estvivant = true;
-                    Mario.position.X = 50;
-                    Mario.position.Y = 900;
                     Ennemi.estvivant = true;
-
                 }
             }
         }
@@ -250,41 +245,29 @@ namespace Jeuxvideo2
             spriteBatch.Begin();
             //il y a plusieur possibilité d'affichage avec .draw.
 
-
+            //Background
             spriteBatch.Draw(background, fenetre, Color.White);
-            //Lancer projectile Mario
-
-
 
             if (Mario.estvivant == true)
             {
                 spriteBatch.Draw(Mario.sprite, Mario.position, Color.White);
-                spriteBatch.Draw(projectilemario.sprite, projectilemario.position += projectilemario.vitesse, Color.White);
 
+                 //Lancer projectile Mario
 
                 if (Keyboard.GetState().IsKeyDown(Keys.Space))
-                {
-                    projectilemario.estvivant = false;
-                    projectilemario.vitesse.Y = -10;
-
-                    if (projectilemario.estvivant == false)
-                    {
-                        projectilemario.vitesse.Y = -10;
-                        spriteBatch.Draw(projectilemario.sprite, projectilemario.position += projectilemario.vitesse, Color.White);
-                        projectilemario.position += projectilemario.vitesse;
-                        projectilemario.estvivant = true;
-
-                    }
-                }
+                {                        
+                         spriteBatch.Draw(projectilemario.sprite, projectilemario.position += projectilemario.vitesse, Color.White);
+                         projectilemario.vitesse.Y = -10;
+                         projectilemario.position += projectilemario.vitesse;
+                         //sonlaser.Play();
+                }                                             
             }
 
-              if(projectilemario.position.Y < fenetre.Top)
+            if (projectilemario.position.Y < fenetre.Top)
             {
                 projectilemario.position = Mario.position;
-            }
-                
-            
 
+            }
             if (Mario.estvivant == false)
             {
                 explosion1.position = Mario.position;
@@ -303,12 +286,9 @@ namespace Jeuxvideo2
             {
                 if (projectile.position.Y >= Ennemi.position.Y)
                 {
-
                     spriteBatch.Draw(projectile.sprite, projectile.position += projectile.vitesse, Color.White);
                     projectile.vitesse.Y = 10;
-                    projectile.position += projectile.vitesse;
-
-                    //laser.Play();
+                    projectile.position += projectile.vitesse; 
                 }
 
                 if (projectile.position.Y > fenetre.Bottom)
@@ -323,8 +303,7 @@ namespace Jeuxvideo2
                 explosion.position = Ennemi.position;
                 spriteBatch.Draw(explosion.sprite, explosion.position += explosion.vitesse, Color.White);
                 explosion.vitesse.X += 2;
-                explosion.vitesse.Y += 2;
-              
+                explosion.vitesse.Y += 2;              
             }
 
             spriteBatch.End();

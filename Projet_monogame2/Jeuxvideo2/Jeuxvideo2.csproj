@@ -63,16 +63,18 @@
     <Content Include="Content\explosion2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Laser.mp3" />
     <Content Include="Content\projectile1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Projectilemario1.png">
+    <Content Include="Content\projectilemario4.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\spaceship1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Icon.ico" />
+    <Content Include="Laser.mp3" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Content.mgcb">

@@ -13,9 +13,9 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Sounds/Laser.mp3
+#begin Sons/Laser.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Sounds/Laser.mp3
+/build:Sons/Laser.mp3
 
