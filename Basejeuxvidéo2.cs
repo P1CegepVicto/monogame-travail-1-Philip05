@@ -6,9 +6,9 @@ using System;
 
 namespace Jeuxvideo2
 {
-      /// <summary>
-      /// This is the main type for your game.
-      /// </summary>                                                                    
+    /// <summary>
+    /// This is the main type for your game.
+    /// </summary>                                                                    
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
@@ -19,7 +19,7 @@ namespace Jeuxvideo2
         Texture2D background;
         Gameobject2 projectile;
         Gameobject2 projectilemario;
-       Gameobject2 explosion;
+        Gameobject2 explosion;
         Gameobject2 explosion1;
         SoundEffect son;
         SoundEffectInstance sonlaser;
@@ -55,7 +55,7 @@ namespace Jeuxvideo2
         /// all of your content.
         /// </summary>
         protected override void LoadContent()
-        { 
+        {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -74,9 +74,8 @@ namespace Jeuxvideo2
             projectile.position = Ennemi.position;
             //Mario
             projectilemario = new Gameobject2();
-            projectilemario.estvivant = true;
-            projectilemario.position = Mario.position;
-           //Explosions
+            projectilemario.estvivant = false;
+            //Explosions
             explosion = new Gameobject2();
             explosion.estvivant = true;
             explosion1 = new Gameobject2();
@@ -85,7 +84,7 @@ namespace Jeuxvideo2
             SoundEffect son;
             SoundEffectInstance sonlaser;
 
-           
+
 
             //Ajouter l'image.
             //**** Aller dans advences et cliquer sur copy to output et copy if newer
@@ -98,7 +97,7 @@ namespace Jeuxvideo2
             projectilemario.sprite = Content.Load<Texture2D>("Projectilemario4.png");
             son = Content.Load<SoundEffect>("Sons\\Laser");
             sonlaser = son.CreateInstance();
-          
+
 
 
             //Charger un son chanson, il faut changer le type avec le nom entre guillemet.
@@ -129,57 +128,65 @@ namespace Jeuxvideo2
             //Déplacament clavier Mario
 
             if (Mario.estvivant == true)
-            { 
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                Mario.position.X += 8;
-            }
+                if (Keyboard.GetState().IsKeyDown(Keys.D))
+                {
+                    Mario.position.X += 8;
+                }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                Mario.position.X -= 8;
-            }
+                if (Keyboard.GetState().IsKeyDown(Keys.A))
+                {
+                    Mario.position.X -= 8;
+                }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
-            {
-                Mario.position.Y -= 8;
-            }
+                if (Keyboard.GetState().IsKeyDown(Keys.W))
+                {
+                    Mario.position.Y -= 8;
+                }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-            {
-                Mario.position.Y += 8;
-            }
-                
+                if (Keyboard.GetState().IsKeyDown(Keys.S))
+                {
+                    Mario.position.Y += 8;
+                }
+
                 //Limiter espace de jeu
 
                 if (Mario.position.X < fenetre.Left)
-            {
+                {
                     Mario.position.X = fenetre.Left;
-            }
+                }
 
-            if (Mario.position.X > fenetre.Right - Mario.sprite.Width)
-            {
+                if (Mario.position.X > fenetre.Right - Mario.sprite.Width)
+                {
                     Mario.position.X = fenetre.Right - Mario.sprite.Width;
-            }
+                }
 
-            if (Mario.position.Y > fenetre.Bottom - Mario.sprite.Height)
-            {
-                Mario.position.Y = fenetre.Bottom - Mario.sprite.Height;
-            }
+                if (Mario.position.Y > fenetre.Bottom - Mario.sprite.Height)
+                {
+                    Mario.position.Y = fenetre.Bottom - Mario.sprite.Height;
+                }
 
-            if (Mario.position.Y < fenetre.Top)
-            {
-                Mario.position.Y = fenetre.Top;
+                if (Mario.position.Y < fenetre.Top)
+                {
+                    Mario.position.Y = fenetre.Top;
+                }
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                {
+                    if (projectilemario.estvivant == false)
+                    {
+                        projectilemario.vitesse.Y = -10;
+                      
+                    }
+                }              
             }
-          
-            } 
 
             //update Mario,vitesse.
 
             UpdateMario();
             UpdateVitesse();
             UpdateEnnemi();
-
+            UpdateProjectileMario();
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -197,9 +204,9 @@ namespace Jeuxvideo2
             }
         }
 
-            public void UpdateEnnemi()
-        { 
-            if(Ennemi.GetRect().Intersects(projectilemario.GetRect()))
+        public void UpdateEnnemi()
+        {
+            if (Ennemi.GetRect().Intersects(projectilemario.GetRect()))
             {
                 Ennemi.estvivant = false;
             }
@@ -234,6 +241,14 @@ namespace Jeuxvideo2
             }
         }
 
+        public void UpdateProjectileMario()
+        {
+            if (projectilemario.estvivant == true)
+            {
+                projectilemario.position += projectilemario.vitesse;
+            }
+        }
+
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -252,15 +267,6 @@ namespace Jeuxvideo2
             {
                 spriteBatch.Draw(Mario.sprite, Mario.position, Color.White);
 
-                 //Lancer projectile Mario
-
-                if (Keyboard.GetState().IsKeyDown(Keys.Space))
-                {                        
-                         spriteBatch.Draw(projectilemario.sprite, projectilemario.position += projectilemario.vitesse, Color.White);
-                         projectilemario.vitesse.Y = -10;
-                         projectilemario.position += projectilemario.vitesse;
-                         //sonlaser.Play();
-                }                                             
             }
 
             if (projectilemario.position.Y < fenetre.Top)
@@ -272,7 +278,7 @@ namespace Jeuxvideo2
             {
                 explosion1.position = Mario.position;
                 spriteBatch.Draw(explosion1.sprite, explosion1.position += explosion1.vitesse, Color.White);
-                explosion1.vitesse.X+=2;
+                explosion1.vitesse.X += 2;
                 explosion1.vitesse.Y += 2;
                 explosion1.position += explosion1.vitesse;
             }
@@ -288,7 +294,7 @@ namespace Jeuxvideo2
                 {
                     spriteBatch.Draw(projectile.sprite, projectile.position += projectile.vitesse, Color.White);
                     projectile.vitesse.Y = 10;
-                    projectile.position += projectile.vitesse; 
+                    projectile.position += projectile.vitesse;
                 }
 
                 if (projectile.position.Y > fenetre.Bottom)
@@ -303,8 +309,14 @@ namespace Jeuxvideo2
                 explosion.position = Ennemi.position;
                 spriteBatch.Draw(explosion.sprite, explosion.position += explosion.vitesse, Color.White);
                 explosion.vitesse.X += 2;
-                explosion.vitesse.Y += 2;              
+                explosion.vitesse.Y += 2;
             }
+
+            if (projectilemario.estvivant == true)
+            {
+                spriteBatch.Draw(projectilemario.sprite,projectilemario.position,Color.White);
+            }
+            
 
             spriteBatch.End();
 
