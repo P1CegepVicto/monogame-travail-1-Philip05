@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Jeuavancé
 {
@@ -12,17 +13,19 @@ namespace Jeuavancé
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Gameobject Hero;
+        Gameobject ExplosionEnnemi;
         Gameobject Ennemi;
         Rectangle fenêtre;
         Gameobject projectilehero;
         Gameobject laser;
         Texture2D Background;
+        Random de1 = new Random();
+        Gameobject[] tableauennemi;
+        Gameobject[] projectilehéro;
+        
+
+        
        
-
-
-
-
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -40,7 +43,7 @@ namespace Jeuavancé
            
             this.graphics.PreferredBackBufferWidth = graphics.GraphicsDevice.DisplayMode.Width;
             this.graphics.PreferredBackBufferHeight = graphics.GraphicsDevice.DisplayMode.Height;
-            this.graphics.ApplyChanges(); //ou this.apply.graphicschanges.
+            this.graphics.ToggleFullScreen(); //ou this.apply.graphicschanges.
             fenêtre = new Rectangle(0, 0, graphics.GraphicsDevice.DisplayMode.Width, graphics.GraphicsDevice.DisplayMode.Height);// TODO: Add your initialization logic here
 
             base.Initialize();
@@ -54,10 +57,10 @@ namespace Jeuavancé
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            Ennemi = new Gameobject();
-            Ennemi.estvivant = true;
-            Ennemi.position.X = 1350;
-            Ennemi.position.Y = 0;
+            //Ennemi = new Gameobject();
+            //Ennemi.estvivant = true;
+            //Ennemi.position.X = 1350;
+            //Ennemi.position.Y = 0;
 
             laser = new Gameobject();
             laser.estvivant = true;
@@ -70,17 +73,36 @@ namespace Jeuavancé
             projectilehero = new Gameobject();
             projectilehero.estvivant = true;
 
+
+            tableauennemi = new Gameobject[8];
+            for(int i =0; i < tableauennemi.Length; i++)
+            {
+                tableauennemi[i] = new Gameobject();
+                tableauennemi[i].direction.X = de1.Next(5,15);
+                tableauennemi[i].direction.Y = de1.Next(1, 8);
+                tableauennemi[i].position.Y = 0;
+                tableauennemi[i].position.X = 1300;             
+                tableauennemi[i].estvivant = true;
+            }
+
+            ExplosionEnnemi = new Gameobject();
+            ExplosionEnnemi.estvivant = true;
+
+
+
+            #region Load fichiers
+
+            for(int g =0; g<tableauennemi.Length;g++)
+            {
+             tableauennemi[g].sprite = Content.Load<Texture2D>("Ennemi5.png");
+            }
            
-
-
-            //Load fichiers
-
-            Ennemi.sprite = Content.Load<Texture2D>("Ennemi5.png");
             laser.sprite = Content.Load<Texture2D>("Laser.png");
             Hero.sprite = Content.Load<Texture2D>("Hero2.png");
             projectilehero.sprite = Content.Load<Texture2D>("Projectilehero2.png");
             Background = Content.Load<Texture2D>("Background.jpg");
-            
+            ExplosionEnnemi.sprite = Content.Load<Texture2D>("explosion2.png");
+            #endregion
 
         }
         protected override void UnloadContent()
@@ -97,38 +119,21 @@ namespace Jeuavancé
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            #region Deplacement ennemi                   
-            //Déplacement ennemi
-
-            if (Ennemi.estvivant == true)
-               
-            {
-                if (Ennemi.position.Y == 0  && Ennemi.vitesse.Y != -10)
-                {
-                    Ennemi.vitesse.Y = 10;                   
-                }
-                if(Ennemi.position.Y >= fenêtre.Bottom- Ennemi.sprite.Height )
-                {
-                    Ennemi.vitesse.Y = -10;              
-                }
-                if(Ennemi.position.Y ==0 && Ennemi.vitesse.Y != 10)
-                {
-                    Ennemi.vitesse.Y = 10;
-                }
-            }
-
-            #endregion
+                                 
             #region lancer laser ennemi
-            if (laser.estvivant==true)
-            {              
-                    laser.position = Ennemi.position;
-                    laser.vitesse.X = -10;
-                    laser.estvivant = false; 
-            }
-            if(laser.position.X ==0)
-            {
-                laser.estvivant = true;
-            }
+            //for (int j = 0; j < tableauennemi.Length; j++)
+            //{
+            //    if (laser.estvivant == true)
+            //    {
+            //        laser.position = tableauennemi[j].position;
+            //        laser.vitesse.X = -10;
+            //        laser.estvivant = false;
+            //    }
+            //    if (laser.position.X == 0)
+            //    {
+            //        laser.estvivant = true;
+            //    }
+            //}
 
             #endregion
             #region Déplacements Hero
@@ -160,17 +165,17 @@ namespace Jeuavancé
                 {
                     Hero.position.X = fenêtre.Left;
                 }
-                if (Hero.position.X > fenêtre.Right - Ennemi.sprite.Height)
+                if (Hero.position.X > fenêtre.Right - Hero.sprite.Height)
                 {
-                    Hero.position.X = fenêtre.Right - Ennemi.sprite.Height;
+                    Hero.position.X = fenêtre.Right - Hero.sprite.Height;
                 }
-                if (Hero.position.Y > fenêtre.Bottom - Ennemi.sprite.Width)
+                if (Hero.position.Y > fenêtre.Bottom - Hero.sprite.Width)
                 {
-                    Hero.position.Y = fenêtre.Bottom- Ennemi.sprite.Width;
+                    Hero.position.Y = fenêtre.Bottom- Hero.sprite.Width;
                 }
-                if (Hero.position.Y < fenêtre.Top - Ennemi.sprite.Width)
+                if (Hero.position.Y < fenêtre.Top - Hero.sprite.Width)
                 {
-                    Hero.position.Y = fenêtre.Top - Ennemi.sprite.Width;
+                    Hero.position.Y = fenêtre.Top - Hero.sprite.Width;
                 }
             }
             #endregion
@@ -182,7 +187,7 @@ namespace Jeuavancé
                     if(projectilehero.estvivant ==true)
                     {
                         projectilehero.position = Hero.position;
-                        projectilehero.vitesse.X = 10;
+                        projectilehero.vitesse.X = 40;
                         projectilehero.estvivant = false;
                     }
 
@@ -195,9 +200,24 @@ namespace Jeuavancé
             }
             #endregion
 
+            
+            for (int n =0; n<tableauennemi.Length;n++)
+            {
+                if (tableauennemi[n].position.Y > fenêtre.Bottom)
+                {
+                    tableauennemi[n].direction.X = de1.Next(1, 10);
+                    tableauennemi[n].direction.Y = de1.Next(1, 8);
+                    tableauennemi[n].position.X = de1.Next(1000, 1700);
+                    tableauennemi[n].position.Y = 0;
+                    tableauennemi[n].estvivant = true;
+                }
+
+            }
+
             UpdateHero();
             UpdateEnnemi();
             UpdateProjectileEnnemi();
+           
 
 
             // TODO: Add your update logic here
@@ -214,18 +234,34 @@ namespace Jeuavancé
         }
         public void UpdateEnnemi()
         {
-            if(Ennemi.GetRect().Intersects(projectilehero.GetRect()))
+            for (int a = 0; a < tableauennemi.Length; a++)
             {
-                Ennemi.estvivant = false;
-            }               
+                tableauennemi[a].position.X += tableauennemi[a].direction.X;
+                tableauennemi[a].position.Y += tableauennemi[a].direction.Y;
+                tableauennemi[a].vitesse.Y = 5;
+                tableauennemi[a].vitesse.X = -10;
+
+
+                if (tableauennemi[a].GetRect().Intersects(projectilehero.GetRect()))
+                {
+                    tableauennemi[a].estvivant = false;
+                    ExplosionEnnemi.position = tableauennemi[a].position;
+                    ExplosionEnnemi.vitesse.X = 2;
+                    ExplosionEnnemi.vitesse.Y = 3;
+                }
+            }
         }
         public void UpdateProjectileEnnemi()
         {
-            if(Hero.GetRect().Intersects(Ennemi.GetRect()))
+            for (int l = 0; l < tableauennemi.Length; l++)
             {
-                Hero.estvivant = false;
+                if (Hero.GetRect().Intersects(tableauennemi[l].GetRect()))
+                {
+                    Hero.estvivant = false;
+                }
             }
         }
+        
        
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         /// 
@@ -235,15 +271,28 @@ namespace Jeuavancé
             spriteBatch.Begin();
 
             spriteBatch.Draw(Background, fenêtre, Color.White);
-            //Déplacer ennemi fenêtre
-            #region Dessin ennemi + laser ennemi vivant
-            if (Ennemi.estvivant== true)
+             #region Dessin ennemi si vivant + laser ennemi vivant            
+            for(int b =0; b< tableauennemi.Length; b++)
             {
-                spriteBatch.Draw(Ennemi.sprite, Ennemi.position += Ennemi.vitesse, Color.White);
-
-                if (laser.estvivant == false)
+                if (tableauennemi[b].estvivant == true)
                 {
-                    spriteBatch.Draw(laser.sprite, laser.position += laser.vitesse, Color.White);
+                    spriteBatch.Draw(tableauennemi[b].sprite, tableauennemi[b].position+=tableauennemi[b].vitesse, Color.White);
+                    
+                    //if (laser.estvivant == false)
+                    //{
+                    //    spriteBatch.Draw(laser.sprite, laser.position += laser.vitesse, Color.White);
+                    //}
+                }             
+            }
+            #endregion
+            #region Dessin explosion ennemi
+            for (int s =0; s<tableauennemi.Length;s++)
+            {
+                if(tableauennemi[s].estvivant ==false)
+                {
+                    spriteBatch.Draw(ExplosionEnnemi.sprite, ExplosionEnnemi.position += ExplosionEnnemi.vitesse, Color.White);
+                    tableauennemi[s].estvivant = true;
+                    
                 }
             }
             #endregion

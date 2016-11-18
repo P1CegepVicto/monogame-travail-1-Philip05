@@ -14,6 +14,7 @@ namespace Jeuavancé
         public Texture2D sprite;
         public Vector2 position;
         public Vector2 vitesse;
+        public Vector2 direction;
         public Rectangle RectCollision = new Rectangle();
 
         public Rectangle GetRect()
