@@ -29,15 +29,15 @@ namespace Jeuavancé
         SoundEffectInstance Sonlaser;
         Gameobject explosionhero;
         SpriteFont font;
-        Song spacemusic;
+        SpriteFont fonttotaltime;
         int compteurexplohero=0;
-      
-
-
-
         int compteur=0;
         int cptennemi = 0;     
         int v = 0;
+
+
+
+        
        
 
 
@@ -89,7 +89,6 @@ namespace Jeuavancé
                 projectilehéro[y].position = Hero.position;
             }
 
-
             tableauennemi = new Gameobject[10];
             for (int i = 0; i < tableauennemi.Length; i++)
             {
@@ -105,8 +104,6 @@ namespace Jeuavancé
             ExplosionEnnemi.estvivant = true;
             explosionhero = new Gameobject();
             explosionhero.estvivant = false;
-
-
 
             #region Load fichiers
 
@@ -155,7 +152,6 @@ namespace Jeuavancé
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-          
 
             #region lancer laser ennemi
             //for (int j = 0; j < tableauennemi.Length; j++)
@@ -236,8 +232,6 @@ namespace Jeuavancé
                             v++;
                         }                                             
                     }
-                    
-
                     else
                     {
                         v = 0;
@@ -247,28 +241,21 @@ namespace Jeuavancé
                             projectilehéro[y].estvivant = true;                           
                         }
                     }                   
-
                 }
             }
             
             #endregion
-         
-
             for (int n = 0; n < tableauennemi.Length; n++)
             {
-                
-                    if (tableauennemi[n].position.Y > fenêtre.Bottom)
+                  if (tableauennemi[n].position.Y > fenêtre.Bottom)
                     {
                         tableauennemi[n].direction.X = de1.Next(1, 10);
                         tableauennemi[n].direction.Y = de1.Next(1, 8);
                         tableauennemi[n].position.X = de1.Next(100, 1700);
                         tableauennemi[n].position.Y = 0;
-                        tableauennemi[n].estvivant = true;
-                                          
+                        tableauennemi[n].estvivant = true;                                          
                 }
-            }
-
-          
+            }       
             UpdateEnnemi();
             UpdateProjectileEnnemi();
             #region Si hero mort reprend position initiale;
@@ -280,9 +267,6 @@ namespace Jeuavancé
                     explosionhero.position = Hero.position;
                     compteurexplohero++;
                 }
-
-
-                //Hero.estvivant = true;
             }
 
             #endregion
@@ -291,30 +275,17 @@ namespace Jeuavancé
 
             base.Update(gameTime);
         }
-
-        
-           public void UpdateEnnemi()
-        {
-
-            for(int j =0; j<tableauennemi.Length; j++)
-            {
-                if(tableauennemi[j].position.Y >fenêtre.Bottom)
-                {
-                    tableauennemi[j].estvivant = true;
-                }
-            }
-          
+         public void UpdateEnnemi()
+        {     
                 for (int a = 0; a < tableauennemi.Length; a++)
                 {
                 if (cptennemi == 5)
                 {
-
                     tableauennemi[a].position.X += tableauennemi[a].direction.X;
                     tableauennemi[a].position.Y += tableauennemi[a].direction.Y;
                     tableauennemi[a].vitesse.Y = 5;
                     tableauennemi[a].vitesse.X = -10;
                     cptennemi = 0;
-
                 }
                     cptennemi++;
                 for (int b = 0; b < projectilehéro.Length; b++)
@@ -328,10 +299,7 @@ namespace Jeuavancé
                     }
                 }                   
             }               
-        }
-           
-            
-    
+        }   
         public void UpdateProjectileEnnemi()
         {
             for (int l = 0; l < tableauennemi.Length; l++)
@@ -346,10 +314,6 @@ namespace Jeuavancé
                 }
             }
         }
-
-        
-
-
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         /// 
         protected override void Draw(GameTime gameTime)
@@ -358,17 +322,12 @@ namespace Jeuavancé
             spriteBatch.Begin();
 
             spriteBatch.Draw(Background, fenêtre, Color.White);
-            #region Dessin ennemi si vivant + laser ennemi vivant            
+            #region Dessin ennemi si vivant             
             for (int b = 0; b < tableauennemi.Length; b++)
             {
                 if (tableauennemi[b].estvivant == true)
-                {
-                   
-                        spriteBatch.Draw(tableauennemi[b].sprite, tableauennemi[b].position += tableauennemi[b].vitesse, Color.White);
-                    //if (laser.estvivant == false)
-                    //{
-                    //    spriteBatch.Draw(laser.sprite, laser.position += laser.vitesse, Color.White);
-                    //}
+                {                  
+                        spriteBatch.Draw(tableauennemi[b].sprite, tableauennemi[b].position += tableauennemi[b].vitesse, Color.White);                    
                 }
             }
             #endregion
@@ -378,8 +337,6 @@ namespace Jeuavancé
                 if (tableauennemi[s].estvivant == false)
                 {
                     spriteBatch.Draw(ExplosionEnnemi.sprite, ExplosionEnnemi.position += ExplosionEnnemi.vitesse, Color.White);
-                    
-
                 }
             }
             #endregion
@@ -411,7 +368,7 @@ namespace Jeuavancé
                     Hero.position.X = 25;
                     Hero.position.Y = 600;
                     compteurexplohero = 0;
-                    explosionhero.estvivant = true;
+                    explosionhero.estvivant = true;                  
                 }
             }
 
