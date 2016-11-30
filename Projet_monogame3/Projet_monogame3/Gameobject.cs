@@ -16,6 +16,8 @@ namespace Projet_monogame3
         public Vector2 vitesse;
         public Vector2 direction;
         public Rectangle RectCollision = new Rectangle();
+       
+        
 
         public Rectangle GetRect()
         {

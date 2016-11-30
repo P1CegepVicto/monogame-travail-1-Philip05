@@ -20,7 +20,7 @@ namespace Projet_monogame3
         public Rectangle spriteAfficher;
         public int cpt = 0;
         //États
-        public enum etats { attentedroite, attentegauche, rundroite, rungauche };
+        public enum etats { attentedroite, attentegauche, rundroite, rungauche,runhaut,runbas,attentehaut,attentebas };
         public etats objetstate;
         //compteur
         private int compteur = 0;
@@ -53,11 +53,21 @@ namespace Projet_monogame3
        public Rectangle[] TabAttenteGauche =
         {
             new Rectangle(195,226,65,65)
-      };    
-           
+        };
+        public Rectangle[] TabAttenteHaut =
+        {
+            new Rectangle(35,310,63,65)
+        };
+        public Rectangle[] TabAttenteBas =
+        {
+             new Rectangle(78,310,63,65)
+        };
 
-
-
-
+        public int runhautstate = 0;
+        public int nbetatshaut = 2;
+        public Rectangle[] TabRunHaut = {
+            new Rectangle(35,310,63,65),
+            new Rectangle(78,310,63,65)};
+       
     }
 }
