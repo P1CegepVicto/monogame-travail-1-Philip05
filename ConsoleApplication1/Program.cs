@@ -9,24 +9,24 @@ namespace Examenformatif3
 {
     class Program
     {
+        static bool[] moves = new bool[100];
+        static int cpt2 = 1;
+        static int cptaff10 =0;
+       
+
         public static void Main(string[] args)
         {
-            bool[] moves = new bool[100];
-            string move;
-            int compteur = 1;
-            int cpt2 = 1;
+            bool[] moves = new bool[104];
             Random de1 = new Random();
             int nbr;
             int cptfaux = 0;
-            string lettre = "z";
             int cptessais = 0;
 
 
 
 
 
-            moves[0] = true;
-            moves[99] = true;
+             
 
             for (int i = 1; i < moves.Length; i++)
             {
@@ -39,17 +39,24 @@ namespace Examenformatif3
                 {
                     moves[i] = false;
                 }
+             moves[0] = true;
+             moves[99] = true;
             }
 
-            while (lettre != "q")
+
+            while (cpt2 != 0)
             {
+
                 Console.WriteLine("Touche");
                 ConsoleKeyInfo info = Console.ReadKey();
-                lettre = Console.ReadLine();
+                Console.ReadLine();
                 Console.WriteLine();
 
 
-
+                if (info.Key == ConsoleKey.Q)
+                {
+                    Environment.Exit(0);
+                }
 
                 if (info.Key == ConsoleKey.A)
                 {
@@ -69,6 +76,7 @@ namespace Examenformatif3
                     {
                         cptfaux = 0;
                     }
+                    cptessais++;
                 }
                 if (info.Key == ConsoleKey.S)
                 {
@@ -88,6 +96,7 @@ namespace Examenformatif3
                     {
                         cptfaux = 0;
                     }
+                    cptessais++;
                 }
                 if (info.Key == ConsoleKey.D)
                 {
@@ -107,6 +116,7 @@ namespace Examenformatif3
                     {
                         cptfaux = 0;
                     }
+                    cptessais++;
                 }
                 if (info.Key == ConsoleKey.G)
                 {
@@ -126,6 +136,7 @@ namespace Examenformatif3
                     {
                         cptfaux = 0;
                     }
+                    cptessais++;
                 }
                 if (info.Key == ConsoleKey.H)
                 {
@@ -145,11 +156,12 @@ namespace Examenformatif3
                     {
                         cptfaux = 0;
                     }
+                    
                 }
                 if (cptfaux == 4 || cpt2 < 0)
                 {
                     Console.WriteLine("!!!Game Over!!!.");
-                    lettre = "q";
+                    cpt2 = 0;
                 }
                 if (cpt2 < 0)
                 {
@@ -158,7 +170,7 @@ namespace Examenformatif3
                     Environment.Exit(0);
                 }
                 cptessais++;
-                if(info.Key ==ConsoleKey.Y)
+                if (info.Key == ConsoleKey.Y)
                 {
                     AffichageEntier();
                 }
@@ -166,29 +178,49 @@ namespace Examenformatif3
                 {
                     Affichage10();
                 }
-            }
-            if (cpt2 == 99)
+            
+            if (cpt2 >= 99)
             {
                 Console.WriteLine("Vous avex tenté  " + cptessais + " fois pour passer à travers du tableau, mais malgré tout, vous avez réussi!");
+                    
             }
+        }
+
+
             Console.ReadLine();
 
+        }
 
-
-            public static void AffichageEntier()
-          {
-                for (int i = 0; i < 99; i++)
-                {
-                    Console.WriteLine(Main)    
-                }
-
+        public static void AffichageEntier()
+        {
+            for (int y = 0; y < moves.Length; y++)
+            {
+                Console.WriteLine(moves[y]);
             }
+        }
 
         public static void Affichage10()
         {
-
-        }
-
+            for (int y = 0; y <= cpt2+10; y++)
+            {
+                if (cptaff10 == 0)
+                {
+                    y = cpt2;
+                }
+                cptaff10++;
+                Console.WriteLine(moves[y]);
+            }
         }
     }
 }
+            
+            
+            
+ 
+
+            
+
+
+
+       
+

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using System;
 
 namespace Projet_monogame3
@@ -23,17 +25,20 @@ namespace Projet_monogame3
         Texture2D background4;
         Gameobject[] Ghosts;
         Gameobject[] vampire;
+        Gameobject ToucheGhost;
         Random de1 = new Random();
+        SpriteFont font;
+        SoundEffect son;
+        int Gameover=5;
+        SoundEffectInstance scream;
+        int cptviesonic = 5;
         int h = 0;
         int cpttemps = 0;
+        int cptennemi = 0;
+        int cptback = 0;
+        int cpttoucheennemi = 0;
         
        
-        
-        
-
-
-
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -65,20 +70,24 @@ namespace Projet_monogame3
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            son = Content.Load<SoundEffect>("Sounds\\scream"); 
+            scream = son.CreateInstance();
+            Song song = Content.Load<Song>("Sounds\\Song");
+            MediaPlayer.Play(song);
             Ghosts = new Gameobject[10];
-            for(int i =0; i<Ghosts.Length;i++)
+            for(int c =0; c < Ghosts.Length;c++)
             {
-                Ghosts[i] = new Gameobject();
-                Ghosts[i].direction.X = de1.Next(1, 8);
-                Ghosts[i].direction.Y = de1.Next(1, 5);
-                Ghosts[i].position.X = 1300;
-                Ghosts[i].position.Y = 0;
-                Ghosts[i].estvivant = true;
+                Ghosts[c] = new Gameobject();
+                Ghosts[c].estvivant = true;
+                Ghosts[c].direction.X = de1.Next(1,5);
+                Ghosts[c].direction.Y= de1.Next(1,5);
             }
 
             #region projectilehero
-            projectilehero = new Gameobject[250];
+
+            
+
+            projectilehero = new Gameobject[25];
             for(int a=0; a<projectilehero.Length;a++)
             {
                 projectilehero[a] = new Gameobject();
@@ -91,32 +100,33 @@ namespace Projet_monogame3
             }
             #endregion
 
-
-
-
             #region Anime Sonic
             Sonic = new Gameobjectanime();
             Sonic.direction = Vector2.Zero;
-            Sonic.vitesse.X = 1;
             Sonic.estvivant = true;
             Sonic.objetstate = Gameobjectanime.etats.attentedroite;
             Sonic.position = new Rectangle(80, 250, 65, 65);
-            
-           
-
-           
 
             background1 = new Gameobject();
-            background1.sprite = Content.Load<Texture2D>("background1.jpg");
-            //background2.sprite = Content.Load<Texture2D>("background6.jpg");
+            background1.sprite = Content.Load<Texture2D>("background7.jpg");
+            background2 = new Gameobject();
             Sonic.sprite = Content.Load<Texture2D>("spritesheet.png");
-
-            
-            
-            for(int a =0; a<Ghosts.Length;a++)
+            background2.sprite = Content.Load<Texture2D>("background7.jpg");
+            if (cptback ==0)
             {
-                Ghosts[a].sprite = Content.Load<Texture2D>("Ghost2.png");
+                background3 = Content.Load<Texture2D>("begin2.png");
+                font = Content.Load<SpriteFont>("Font");
             }
+
+            for (int l = 0; l < Ghosts.Length;l++)
+            {
+                Ghosts[l].sprite = Content.Load<Texture2D>("Ghost4.png");
+            }
+
+            ToucheGhost = new Gameobject();
+            ToucheGhost.estvivant = false;
+            ToucheGhost.sprite = Content.Load<Texture2D>("ghosttouch.png");
+
 
             #endregion
 
@@ -141,96 +151,107 @@ namespace Projet_monogame3
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            #region Anime Sonic controles
-            keys = Keyboard.GetState();
-            Sonic.position.X += (int)(Sonic.vitesse.X * Sonic.direction.X);
+            if (cptback !=0 && Gameover !=0)
+            {
+                #region Anime Sonic controles
+                keys = Keyboard.GetState();
+                Sonic.position.X += (int)(Sonic.vitesse.X * Sonic.direction.X);
 
-            if(keys.IsKeyDown(Keys.D))
-            {
-                Sonic.direction.X = 1;
-                Sonic.objetstate = Gameobjectanime.etats.rundroite;
-                background1.position.X -= 3;
-                
-            }
-            if(keys.IsKeyUp(Keys.D)&&PreviousKeys.IsKeyDown(Keys.D))
-            {
-                Sonic.direction.X = 0;
-                Sonic.objetstate = Gameobjectanime.etats.attentedroite;
-            }
-            if (keys.IsKeyDown(Keys.A))
-            {
-                Sonic.direction.X = -1;
-                Sonic.objetstate = Gameobjectanime.etats.rungauche;
-                background1.position.X += 3;
-            }
-            if (keys.IsKeyUp(Keys.A) && PreviousKeys.IsKeyDown(Keys.A))
-            {
-                Sonic.direction.X = 0;
-                Sonic.objetstate = Gameobjectanime.etats.attentegauche;
-              
-            }
-            if(keys.IsKeyDown(Keys.W))
-            {
-                Sonic.direction.Y = 1;
-                Sonic.objetstate = Gameobjectanime.etats.runhaut;
-                background1.position.Y += 3;
-            }
-            if(keys.IsKeyUp(Keys.W)&&PreviousKeys.IsKeyDown(Keys.W))
-            {
-                Sonic.direction.Y = 0;
-                Sonic.objetstate = Gameobjectanime.etats.attentehaut;
-            }
-            if (keys.IsKeyDown(Keys.S))
-            {
-                Sonic.direction.Y = -1;
-                Sonic.objetstate = Gameobjectanime.etats.runhaut;
-                background1.position.Y -= 3;
-            }
-            if (keys.IsKeyUp(Keys.S) && PreviousKeys.IsKeyDown(Keys.S))
-            {
-                Sonic.direction.Y = 0;
-                Sonic.objetstate = Gameobjectanime.etats.attentebas;
-            }
-            #region position ecran sonic
+                if (keys.IsKeyDown(Keys.D))
+                {
 
-            if (Sonic.position.X < fenetre.Width)
-            {
-                Sonic.position.X =200;
-            }
-            #endregion
+                    Sonic.direction.X = 10;
+                    Sonic.position.X += 10;
+                    Sonic.objetstate = Gameobjectanime.etats.rundroite;
+                    background1.position.X -= 3;
+                    background2.position.X -= 3;
 
-            if (Sonic.objetstate ==Gameobjectanime.etats.rundroite)
-            {
-                Sonic.spriteAfficher = Sonic.TabRunDroite[Sonic.runState];
-               
-            }
-            if(Sonic.objetstate ==Gameobjectanime.etats.rungauche)
-            {
-                Sonic.spriteAfficher = Sonic.TabRunGauche[Sonic.runState];               
-            }
-            if (Sonic.objetstate == Gameobjectanime.etats.attentedroite)
-            {
-                Sonic.spriteAfficher = Sonic.TabAttenteDroite[Sonic.WaitState];
-            }
-            if (Sonic.objetstate == Gameobjectanime.etats.attentegauche)
-            {
-                Sonic.spriteAfficher = Sonic.TabAttenteGauche[Sonic.WaitState];
-            }
-            if(Sonic.objetstate == Gameobjectanime.etats.runhaut)
-            {
-                Sonic.spriteAfficher = Sonic.TabRunHaut[Sonic.runhautstate];
-            }
-            if (Sonic.objetstate == Gameobjectanime.etats.attentebas)
-            {
-                Sonic.spriteAfficher = Sonic.TabAttenteBas[Sonic.WaitState];
-            }
-            if (Sonic.objetstate == Gameobjectanime.etats.attentehaut)
-            {
-                Sonic.spriteAfficher = Sonic.TabAttenteHaut[Sonic.WaitState];
-            }
+                }
+                if (keys.IsKeyUp(Keys.D) && PreviousKeys.IsKeyDown(Keys.D))
+                {
+                    Sonic.direction.X = 0;     
+                    Sonic.objetstate = Gameobjectanime.etats.attentedroite;
+                }
+                if (keys.IsKeyDown(Keys.A))
+                {
+                    Sonic.direction.X = -4;
+                    Sonic.position.X -= 10;
+                    Sonic.objetstate = Gameobjectanime.etats.rungauche;
+                    background1.position.X += 3;
+                    background2.position.X += 3;
+                }
+                if (keys.IsKeyUp(Keys.A) && PreviousKeys.IsKeyDown(Keys.A))
+                {
+                    Sonic.direction.X = 0;
+                    Sonic.objetstate = Gameobjectanime.etats.attentegauche;
+
+                }
+                if (keys.IsKeyDown(Keys.W))
+                {
+                    Sonic.direction.Y = 1;
+                    Sonic.position.Y -= 5;
+                    Sonic.objetstate = Gameobjectanime.etats.runhaut;
+                    background1.position.Y += 3;
+                    background2.position.Y += 3;
+                }
+                if (keys.IsKeyUp(Keys.W) && PreviousKeys.IsKeyDown(Keys.W))
+                {
+                    Sonic.direction.Y = 0;
+                    Sonic.objetstate = Gameobjectanime.etats.attentehaut;
+                }
+                if (keys.IsKeyDown(Keys.S))
+                {
+                    Sonic.direction.Y = -1;
+                    Sonic.position.Y += 5;
+                    Sonic.objetstate = Gameobjectanime.etats.runhaut;
+                    background1.position.Y -= 3;
+                    background2.position.Y -= 3;
+                }
+                if (keys.IsKeyUp(Keys.S) && PreviousKeys.IsKeyDown(Keys.S))
+                {
+                    Sonic.direction.Y = 0;
+                    Sonic.objetstate = Gameobjectanime.etats.attentebas;
+                }
+                #region position ecran sonic
+
+                if (Sonic.position.X < fenetre.Width)
+                {
+                    Sonic.position.X = 200;
+                }
+                #endregion
+
+                if (Sonic.objetstate == Gameobjectanime.etats.rundroite)
+                {
+                    Sonic.spriteAfficher = Sonic.TabRunDroite[Sonic.runState];
+
+                }
+                if (Sonic.objetstate == Gameobjectanime.etats.rungauche)
+                {
+                    Sonic.spriteAfficher = Sonic.TabRunGauche[Sonic.runState];
+                }
+                if (Sonic.objetstate == Gameobjectanime.etats.attentedroite)
+                {
+                    Sonic.spriteAfficher = Sonic.TabAttenteDroite[Sonic.WaitState];
+                }
+                if (Sonic.objetstate == Gameobjectanime.etats.attentegauche)
+                {
+                    Sonic.spriteAfficher = Sonic.TabAttenteGauche[Sonic.WaitState];
+                }
+                if (Sonic.objetstate == Gameobjectanime.etats.runhaut)
+                {
+                    Sonic.spriteAfficher = Sonic.TabRunHaut[Sonic.runhautstate];
+                }
+                if (Sonic.objetstate == Gameobjectanime.etats.attentebas)
+                {
+                    Sonic.spriteAfficher = Sonic.TabAttenteBas[Sonic.WaitState];
+                }
+                if (Sonic.objetstate == Gameobjectanime.etats.attentehaut)
+                {
+                    Sonic.spriteAfficher = Sonic.TabAttenteHaut[Sonic.WaitState];
+                }
 
 
-            Sonic.cpt++;
+                Sonic.cpt++;
                 if (Sonic.cpt == 8)
                 {
                     Sonic.runState++;
@@ -242,89 +263,172 @@ namespace Projet_monogame3
                     }
                     Sonic.cpt = 0;
                 }
-            
 
 
-            PreviousKeys = keys;
 
-            #endregion
-            if (Sonic.estvivant == true)
-            {
-                cpttemps++;
-                if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                PreviousKeys = keys;
+
+                #endregion
+
+                #region Projectilehero
+                if (Sonic.estvivant == true)
                 {
+                    cpttemps++;
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                    {
 
-                    if (Sonic.estvivant == true && projectilehero[h].estvivant == false && cpttemps >= 8)
-                    {
-                        projectilehero[h].estvivant = true;
-                        if(Sonic.objetstate ==Gameobjectanime.etats.attentegauche)
+                        if (Sonic.estvivant == true && projectilehero[h].estvivant == false && cpttemps >= 8)
                         {
-                            projectilehero[h].vitesse.X = -10;
-                            projectilehero[h].position.X = Sonic.position.X -10 ;
-                            projectilehero[h].position.Y = Sonic.position.Y ;
+                            projectilehero[h].estvivant = true;
+                            if (Sonic.objetstate == Gameobjectanime.etats.attentegauche)
+                            {
+                                projectilehero[h].vitesse.X = -10;
+                                projectilehero[h].position.X = Sonic.position.X - 10;
+                                projectilehero[h].position.Y = Sonic.position.Y;
+                            }
+                            if (Sonic.objetstate == Gameobjectanime.etats.attentedroite)
+                            {
+                                projectilehero[h].vitesse.X = 10;
+                                projectilehero[h].position.X = Sonic.position.X + 50;
+                                projectilehero[h].position.Y = Sonic.position.Y - 1;
+                            }
+                            if (Sonic.objetstate == Gameobjectanime.etats.attentehaut)
+                            {
+                                projectilehero[h].vitesse.Y = -10;
+                                projectilehero[h].position.X = Sonic.position.X + 50;
+                                projectilehero[h].position.Y = Sonic.position.Y - 1;
+                            }
+                            if (Sonic.objetstate == Gameobjectanime.etats.attentebas)
+                            {
+                                projectilehero[h].vitesse.Y = 10;
+                                projectilehero[h].position.X = Sonic.position.X + 50;
+                                projectilehero[h].position.Y = Sonic.position.Y - 1;
+                            }
+                            cpttemps = 0;
+                            h++;
                         }
-                        if (Sonic.objetstate == Gameobjectanime.etats.attentedroite)
+                        if (h >= projectilehero.Length)
                         {
-                            projectilehero[h].vitesse.X = 10;
-                            projectilehero[h].position.X = Sonic.position.X + 50;
-                            projectilehero[h].position.Y = Sonic.position.Y - 1;
+                            h = 0;
                         }
-                        if(Sonic.objetstate ==Gameobjectanime.etats.attentehaut)
-                        {
-                            projectilehero[h].vitesse.Y = -10;
-                            projectilehero[h].position.X = Sonic.position.X + 50;
-                            projectilehero[h].position.Y = Sonic.position.Y - 1;
-                        }
-                        if (Sonic.objetstate == Gameobjectanime.etats.attentebas)
-                        {
-                            projectilehero[h].vitesse.Y = 10;
-                            projectilehero[h].position.X = Sonic.position.X + 50;
-                            projectilehero[h].position.Y = Sonic.position.Y - 1;
-                        }
-                        cpttemps = 0;
-                        h++;
                     }
-                    if (h >= projectilehero.Length)
+
+                    for (int k = 0; k < projectilehero.Length; k++)
                     {
-                        h = 0;
+                        if (projectilehero[k].position.X >= fenetre.Width)
+                        {
+                            projectilehero[k].position.X = Sonic.position.X;
+                            projectilehero[k].position.Y = Sonic.position.Y;
+                            projectilehero[k].estvivant = false;
+                        }
                     }
                 }
-
-                for (int k = 0; k < projectilehero.Length; k++)
+                #endregion
+                #region ghost
+                for (int v = 0; v < Ghosts.Length; v++)
                 {
-                    if (projectilehero[k].position.X >= fenetre.Width)
+                    if (Ghosts[v].position.Y > fenetre.Bottom)
                     {
-                        projectilehero[k].position.X = Sonic.position.X;
-                        projectilehero[k].position.Y = Sonic.position.Y;
-                        projectilehero[k].estvivant = false;
+                        Ghosts[v].estvivant = false;
+                        Ghosts[v].position.X = de1.Next(0, 3000);
+                        Ghosts[v].position.Y = 0;
                     }
-                }             
+                }
             }
-            for (int g = 0; g < Ghosts.Length; g++)
-                if (Ghosts[g].estvivant == true)
+
+            UpdateToucheEnnemi();
+            UpdateToucheSonic();
+
+            //for(int p=0;p<Ghosts.Length;p++)
+            //{
+            //    if(Ghosts[p])
+            //}
+            #endregion
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
                 {
-                    {
-                        Ghosts[g].vitesse.X = 5;
-                        Ghosts[g].vitesse.Y = 5;
-                        Ghosts[g].estvivant = false;
-                    }
+                cptback++;
                 }
+
+                cptennemi++;
+                updateennemi();
+
+
             //Background
 
-            //if(background1.position.X <0)
-            //{
-            //    background2.position.X = background1.position.X + background1.sprite.Width;
-            //}
-            //if(background1.position.X >0)
-            //{
-            //    background2.position.X = background1.position.X - background1.sprite.Width;
-            //}
+            if (background1.position.X < 0)
+            {
+                background2.position.X = background1.position.X + background1.sprite.Width;
+            }
+            if (background1.position.X > 0)
+            {
+                background2.position.X = background1.position.X - background1.sprite.Width;
+            }
+          
+             if (background1.position.Y> 0)
+            {
+                background2.position.Y = 0;
+                background1.position.Y = 0;
+            }
+            if (background1.position.Y < fenetre.Height-background1.sprite.Height)
+            {
+                background2.position.Y = fenetre.Bottom-background1.sprite.Height;
+                background1.position.Y = fenetre.Bottom-background1.sprite.Height;
+            }
 
-            // TODO: Add your update logic here
 
             base.Update(gameTime);
         }
+        public void UpdateToucheSonic()
+        {
+            for (int i = 0; i < Ghosts.Length; i++)
+            {
+                if (Sonic.GetRectSonic().Intersects(Ghosts[i].GetRect()))
+                {
+                    
+                }
+            }
+        }
+        public void updateennemi()
+        {
+            for (int g = 0; g < Ghosts.Length; g++)
+            {
+                if (cptennemi == 10 && Ghosts[g].estvivant==true)
+                {
+                    Ghosts[g].position.Y = 0;
+                    Ghosts[g].position.X =de1.Next(100,1500);
+                    Ghosts[g].position.X += Ghosts[g].direction.X;
+                    Ghosts[g].position.Y += Ghosts[g].direction.Y;
+                    Ghosts[g].vitesse.X = de1.Next(-3,5);
+                    Ghosts[g].vitesse.Y = de1.Next(1, 8);
+                    Ghosts[g].estvivant = false;
+                    cptennemi = 0;
+                }
+            }
+        }
+        public void UpdateToucheEnnemi()
+        {
+            for (int k = 0; k < projectilehero.Length; k++)
+            {
+                for (int i = 0; i < Ghosts.Length; i++)
+                {
+                    if (projectilehero[k].GetRect().Intersects(Ghosts[i].GetRect()))
+                    {
+                        Ghosts[i].estvivant = true;
+                        ToucheGhost.estvivant = false;
+                        ToucheGhost.vitesse.X = -2;
+                        ToucheGhost.position = Ghosts[i].position;
+                        cpttoucheennemi += 5;
+                        Gameover--;
+                        //scream.Play();
 
+                    }
+                }
+            }
+        }
+            
+               
+        
+  
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -332,38 +436,60 @@ namespace Projet_monogame3
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+
             spriteBatch.Begin();
-            spriteBatch.Draw(background1.sprite,background1.position);
+            if (cptback ==0)
+            {
+                spriteBatch.Draw(background3,fenetre,Color.White);
+                spriteBatch.DrawString(font, "Press enter to start the game", new Vector2(100,500), Color.White);
+            }
+            if (cptback!=0 && Gameover != 0)
+            {
+                spriteBatch.Draw(background1.sprite, background1.position);
+                spriteBatch.Draw(background2.sprite, background2.position);
+                //spriteBatch.DrawString(font,cptviesonic.ToString(), new Vector2(100, 200), Color.White);
+                spriteBatch.DrawString(font, gameTime.TotalGameTime.Minutes.ToString() + ", " + gameTime.TotalGameTime.Seconds.ToString() + ", " + gameTime.TotalGameTime.Milliseconds.ToString() + "", new Vector2(100, 100), Color.White);
+                spriteBatch.DrawString(font, cpttoucheennemi.ToString(), new Vector2(700, 100), Color.White);
+
+                #region dessiner Sonic
+                if (Sonic.estvivant == true)
+                {
+                    spriteBatch.Draw(Sonic.sprite, Sonic.position, Sonic.spriteAfficher, Color.White);
+                }
+
+
+                #endregion
+                #region projectilehero
+                for (int j = 0; j < projectilehero.Length; j++)
+                {
+                    if (projectilehero[j].estvivant == true)
+                    {
+                        spriteBatch.Draw(projectilehero[j].sprite, projectilehero[j].position += projectilehero[j].vitesse, Color.YellowGreen);
+                    }
+                }
+                #endregion
+                #region dessiner ghost
+                for (int y = 0; y < Ghosts.Length; y++)
+                {
+                    if (Ghosts[y].estvivant == false)
+                    {
+                        spriteBatch.Draw(Ghosts[y].sprite, Ghosts[y].position += Ghosts[y].vitesse, Color.White);
+                    }
+                }
             
-
-            //Background
-
-            #region dessiner Sonic
-            if (Sonic.estvivant == true)
+            if(ToucheGhost.estvivant==false)
             {
-                spriteBatch.Draw(Sonic.sprite, Sonic.position, Sonic.spriteAfficher, Color.White);
-            }
-
-
-            #endregion
-            #region projectilehero
-            for (int j = 0; j < projectilehero.Length; j++)
-            {
-                if (projectilehero[j].estvivant == true)
-                {
-                    spriteBatch.Draw(projectilehero[j].sprite, projectilehero[j].position += projectilehero[j].vitesse, Color.YellowGreen);
+                spriteBatch.Draw(ToucheGhost.sprite, ToucheGhost.position+= ToucheGhost.vitesse, Color.White);
+                    
                 }
-            }
+        }
+           
             #endregion
-            #region dessiner ghost
-            for(int y=0; y<Ghosts.Length;y++)
-            {
-                if(Ghosts[y].estvivant ==false)
-                {
-                    spriteBatch.Draw(Ghosts[y].sprite, Ghosts[y].position += Ghosts[y].vitesse, Color.White);
-                }
-            }
-            #endregion
+
+            //if(Gameover <= 0)
+            //{
+            //    spriteBatch.DrawString(font, "GameOver", new Vector2(100, 500), Color.White);
+            //}
 
 
             spriteBatch.End();

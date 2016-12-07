@@ -249,8 +249,7 @@ namespace Jeuavancé
             {
                   if (tableauennemi[n].position.Y > fenêtre.Bottom)
                     {
-                        tableauennemi[n].direction.X = de1.Next(1, 10);
-                        tableauennemi[n].direction.Y = de1.Next(1, 8);
+                        
                         tableauennemi[n].position.X = de1.Next(100, 1700);
                         tableauennemi[n].position.Y = 0;
                         tableauennemi[n].estvivant = true;                                          

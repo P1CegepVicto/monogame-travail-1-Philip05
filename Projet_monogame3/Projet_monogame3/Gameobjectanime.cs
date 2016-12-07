@@ -19,6 +19,7 @@ namespace Projet_monogame3
         public Vector2 position1;
         public Rectangle spriteAfficher;
         public int cpt = 0;
+        public Rectangle RectCollision1 = new Rectangle();
         //États
         public enum etats { attentedroite, attentegauche, rundroite, rungauche,runhaut,runbas,attentehaut,attentebas };
         public etats objetstate;
@@ -68,6 +69,18 @@ namespace Projet_monogame3
         public Rectangle[] TabRunHaut = {
             new Rectangle(35,310,63,65),
             new Rectangle(78,310,63,65)};
-       
+
+        public Rectangle GetRectSonic()
+        {
+            RectCollision1.X = (int)this.position.X;
+            RectCollision1.Y = (int)this.position.Y;
+            RectCollision1.Width = this.sprite.Width;
+            RectCollision1.Height = this.sprite.Height;
+
+            return RectCollision1;
+        }
+
     }
+
 }
+
