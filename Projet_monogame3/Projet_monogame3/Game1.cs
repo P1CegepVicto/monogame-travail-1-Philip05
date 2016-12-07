@@ -334,10 +334,13 @@ namespace Projet_monogame3
                         Ghosts[v].position.Y = 0;
                     }
                 }
+                cptennemi++;
+                updateennemi();
+                UpdateToucheEnnemi();
+                UpdateToucheSonic();
             }
 
-            UpdateToucheEnnemi();
-            UpdateToucheSonic();
+            
 
             //for(int p=0;p<Ghosts.Length;p++)
             //{
@@ -349,8 +352,7 @@ namespace Projet_monogame3
                 cptback++;
                 }
 
-                cptennemi++;
-                updateennemi();
+                
 
 
             //Background
@@ -411,7 +413,7 @@ namespace Projet_monogame3
             {
                 for (int i = 0; i < Ghosts.Length; i++)
                 {
-                    if (projectilehero[k].GetRect().Intersects(Ghosts[i].GetRect()))
+                    if (projectilehero[k].GetRect().Intersects(Ghosts[i].GetRect()) && !Ghosts[i].estvivant)
                     {
                         Ghosts[i].estvivant = true;
                         ToucheGhost.estvivant = false;
