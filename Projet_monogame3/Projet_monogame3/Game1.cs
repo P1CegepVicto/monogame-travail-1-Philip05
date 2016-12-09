@@ -22,7 +22,7 @@ namespace Projet_monogame3
         Gameobject background1;
         Gameobject background2;
         Texture2D background3;
-        Texture2D background4;
+        Gameobject background4;
         Gameobject[] Ghosts;
         Gameobject[] vampire;
         Gameobject ToucheGhost;
@@ -31,12 +31,13 @@ namespace Projet_monogame3
         SoundEffect son;
         int Gameover=5;
         SoundEffectInstance scream;
-        int cptviesonic = 5;
+        float seconds;
         int h = 0;
         int cpttemps = 0;
         int cptennemi = 0;
         int cptback = 0;
         int cpttoucheennemi = 0;
+        
         
        
         public Game1()
@@ -74,7 +75,7 @@ namespace Projet_monogame3
             scream = son.CreateInstance();
             Song song = Content.Load<Song>("Sounds\\Song");
             MediaPlayer.Play(song);
-            Ghosts = new Gameobject[10];
+            Ghosts = new Gameobject[30];
             for(int c =0; c < Ghosts.Length;c++)
             {
                 Ghosts[c] = new Gameobject();
@@ -87,17 +88,14 @@ namespace Projet_monogame3
 
             
 
-            projectilehero = new Gameobject[25];
+            projectilehero = new Gameobject[250];
             for(int a=0; a<projectilehero.Length;a++)
             {
                 projectilehero[a] = new Gameobject();
                 projectilehero[a].estvivant = false;
+                projectilehero[a].sprite = Content.Load<Texture2D>("blueball.png");
             }
-
-            for (int d =0; d<projectilehero.Length;d++)
-            {
-                projectilehero[d].sprite = Content.Load<Texture2D>("blueball.png");
-            }
+            
             #endregion
 
             #region Anime Sonic
@@ -112,6 +110,12 @@ namespace Projet_monogame3
             background2 = new Gameobject();
             Sonic.sprite = Content.Load<Texture2D>("spritesheet.png");
             background2.sprite = Content.Load<Texture2D>("background7.jpg");
+
+           
+                background4 = new Gameobject();
+                background4.sprite = Content.Load<Texture2D>("1.jpg");
+                font = Content.Load<SpriteFont>("Font");
+            
             if (cptback ==0)
             {
                 background3 = Content.Load<Texture2D>("begin2.png");
@@ -124,7 +128,7 @@ namespace Projet_monogame3
             }
 
             ToucheGhost = new Gameobject();
-            ToucheGhost.estvivant = false;
+            ToucheGhost.estvivant = true;
             ToucheGhost.sprite = Content.Load<Texture2D>("ghosttouch.png");
 
 
@@ -219,6 +223,7 @@ namespace Projet_monogame3
                     Sonic.position.X = 200;
                 }
                 #endregion
+                #region anime Sonic
 
                 if (Sonic.objetstate == Gameobjectanime.etats.rundroite)
                 {
@@ -263,6 +268,7 @@ namespace Projet_monogame3
                     }
                     Sonic.cpt = 0;
                 }
+                #endregion
 
 
 
@@ -282,25 +288,25 @@ namespace Projet_monogame3
                             projectilehero[h].estvivant = true;
                             if (Sonic.objetstate == Gameobjectanime.etats.attentegauche)
                             {
-                                projectilehero[h].vitesse.X = -10;
+                                projectilehero[h].vitesse.X = -15;
                                 projectilehero[h].position.X = Sonic.position.X - 10;
                                 projectilehero[h].position.Y = Sonic.position.Y;
                             }
                             if (Sonic.objetstate == Gameobjectanime.etats.attentedroite)
                             {
-                                projectilehero[h].vitesse.X = 10;
+                                projectilehero[h].vitesse.X = 15;
                                 projectilehero[h].position.X = Sonic.position.X + 50;
                                 projectilehero[h].position.Y = Sonic.position.Y - 1;
                             }
                             if (Sonic.objetstate == Gameobjectanime.etats.attentehaut)
                             {
-                                projectilehero[h].vitesse.Y = -10;
+                                projectilehero[h].vitesse.Y = -15;
                                 projectilehero[h].position.X = Sonic.position.X + 50;
                                 projectilehero[h].position.Y = Sonic.position.Y - 1;
                             }
                             if (Sonic.objetstate == Gameobjectanime.etats.attentebas)
                             {
-                                projectilehero[h].vitesse.Y = 10;
+                                projectilehero[h].vitesse.Y = 15;
                                 projectilehero[h].position.X = Sonic.position.X + 50;
                                 projectilehero[h].position.Y = Sonic.position.Y - 1;
                             }
@@ -351,9 +357,41 @@ namespace Projet_monogame3
                 {
                 cptback++;
                 }
+            seconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if(Keyboard.GetState().IsKeyDown(Keys.P))
+            {
+                Gameover = 5;
+                cptback = 0;
+                cpttoucheennemi = 0;
+                font = Content.Load<SpriteFont>("font");
+                for (int y =0; y<Ghosts.Length;y++)
+                {
+                    Ghosts[y].estvivant = false;
+                }
+            }
+            if(cpttoucheennemi ==200)
+            {
+                Gameover++;
+                cpttoucheennemi = 0;
+                
+                for(int g=0;g<projectilehero.Length;g++)
+                {
+                    projectilehero[g].estvivant = false;
+                }
+
 
                 
+            }
 
+            #region limites Sonic + Background + projectile hero           
+            if(Sonic.position.Y < 0)
+            {
+                Sonic.position.Y = 0;
+            }
+            if (Sonic.position.Y >= fenetre.Bottom-Sonic.spriteAfficher.Height)
+            {
+                Sonic.position.Y = fenetre.Bottom-Sonic.spriteAfficher.Height;
+            }
 
             //Background
 
@@ -365,8 +403,15 @@ namespace Projet_monogame3
             {
                 background2.position.X = background1.position.X - background1.sprite.Width;
             }
-          
-             if (background1.position.Y> 0)
+            if (background2.position.X < 0)
+            {
+                background1.position.X = background2.position.X + background2.sprite.Width;
+            }
+            if (background2.position.X > 0)
+            {
+                background1.position.X = background2.position.X - background2.sprite.Width;
+            }
+            if (background1.position.Y> 0)
             {
                 background2.position.Y = 0;
                 background1.position.Y = 0;
@@ -377,6 +422,16 @@ namespace Projet_monogame3
                 background1.position.Y = fenetre.Bottom-background1.sprite.Height;
             }
 
+            for (int i =0;i<projectilehero.Length;i++)
+            {
+                if(projectilehero[i].position.X > fenetre.Width)
+                {
+                    projectilehero[i].estvivant = true;
+                }
+            }
+            #endregion
+
+            
 
             base.Update(gameTime);
         }
@@ -384,9 +439,10 @@ namespace Projet_monogame3
         {
             for (int i = 0; i < Ghosts.Length; i++)
             {
-                if (Sonic.GetRectSonic().Intersects(Ghosts[i].GetRect()))
+                if (Sonic.GetRectSonic().Intersects(Ghosts[i].GetRect())&& !Ghosts[i].estvivant)
                 {
-                    
+                    Ghosts[i].estvivant = true;
+                    Gameover--;
                 }
             }
         }
@@ -417,12 +473,12 @@ namespace Projet_monogame3
                     {
                         Ghosts[i].estvivant = true;
                         ToucheGhost.estvivant = false;
-                        ToucheGhost.vitesse.X = -2;
+                        ToucheGhost.vitesse.X = -3;
+                        ToucheGhost.vitesse.Y = 3;
                         ToucheGhost.position = Ghosts[i].position;
                         cpttoucheennemi += 5;
-                        Gameover--;
-                        //scream.Play();
-
+                        scream.Play();
+                        
                     }
                 }
             }
@@ -445,13 +501,14 @@ namespace Projet_monogame3
                 spriteBatch.Draw(background3,fenetre,Color.White);
                 spriteBatch.DrawString(font, "Press enter to start the game", new Vector2(100,500), Color.White);
             }
-            if (cptback!=0 && Gameover != 0)
+            if (cptback != 0 && Gameover != 0)
             {
                 spriteBatch.Draw(background1.sprite, background1.position);
                 spriteBatch.Draw(background2.sprite, background2.position);
                 //spriteBatch.DrawString(font,cptviesonic.ToString(), new Vector2(100, 200), Color.White);
-                spriteBatch.DrawString(font, gameTime.TotalGameTime.Minutes.ToString() + ", " + gameTime.TotalGameTime.Seconds.ToString() + ", " + gameTime.TotalGameTime.Milliseconds.ToString() + "", new Vector2(100, 100), Color.White);
-                spriteBatch.DrawString(font, cpttoucheennemi.ToString(), new Vector2(700, 100), Color.White);
+                spriteBatch.DrawString(font, gameTime.TotalGameTime.Minutes.ToString() + ", " + gameTime.TotalGameTime.Seconds.ToString() + ", " + gameTime.TotalGameTime.Milliseconds.ToString() + "", new Vector2(100, 50), Color.OrangeRed);
+                spriteBatch.DrawString(font, " Points: " + cpttoucheennemi.ToString(), new Vector2(600, 50), Color.OrangeRed);
+                spriteBatch.DrawString(font, " Vies: " + Gameover.ToString(), new Vector2(1000, 50), Color.OrangeRed);
 
                 #region dessiner Sonic
                 if (Sonic.estvivant == true)
@@ -461,6 +518,7 @@ namespace Projet_monogame3
 
 
                 #endregion
+                
                 #region projectilehero
                 for (int j = 0; j < projectilehero.Length; j++)
                 {
@@ -478,21 +536,22 @@ namespace Projet_monogame3
                         spriteBatch.Draw(Ghosts[y].sprite, Ghosts[y].position += Ghosts[y].vitesse, Color.White);
                     }
                 }
-            
-            if(ToucheGhost.estvivant==false)
-            {
-                spriteBatch.Draw(ToucheGhost.sprite, ToucheGhost.position+= ToucheGhost.vitesse, Color.White);
-                    
+
+                if (ToucheGhost.estvivant == false)
+                {
+                    spriteBatch.Draw(ToucheGhost.sprite, ToucheGhost.position += ToucheGhost.vitesse, Color.White);
+
                 }
-        }
-           
-            #endregion
 
-            //if(Gameover <= 0)
-            //{
-            //    spriteBatch.DrawString(font, "GameOver", new Vector2(100, 500), Color.White);
-            //}
 
+                #endregion
+            }
+            if (Gameover ==0)
+                {
+                    spriteBatch.Draw(background4.sprite, fenetre, Color.White);
+                    spriteBatch.DrawString(font, "GAME OVER", new Vector2(900, 500), Color.OrangeRed);
+                    spriteBatch.DrawString(font, "Press p to start again or escape to quit", new Vector2(700, 600), Color.OrangeRed);
+            }
 
             spriteBatch.End();
 

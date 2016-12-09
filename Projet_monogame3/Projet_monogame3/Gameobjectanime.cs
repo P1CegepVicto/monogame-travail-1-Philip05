@@ -72,10 +72,8 @@ namespace Projet_monogame3
 
         public Rectangle GetRectSonic()
         {
-            RectCollision1.X = (int)this.position.X;
-            RectCollision1.Y = (int)this.position.Y;
-            RectCollision1.Width = this.sprite.Width;
-            RectCollision1.Height = this.sprite.Height;
+            RectCollision1 = position;
+            
 
             return RectCollision1;
         }
