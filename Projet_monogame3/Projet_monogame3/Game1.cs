@@ -29,7 +29,7 @@ namespace Projet_monogame3
         Random de1 = new Random();
         SpriteFont font;
         SoundEffect son;
-        int Gameover=5;
+        int Gameover=10;
         SoundEffectInstance scream;
         float seconds;
         int h = 0;
@@ -37,6 +37,7 @@ namespace Projet_monogame3
         int cptennemi = 0;
         int cptback = 0;
         int cpttoucheennemi = 0;
+        int ennemivivant = 250;
         
         
        
@@ -75,20 +76,21 @@ namespace Projet_monogame3
             scream = son.CreateInstance();
             Song song = Content.Load<Song>("Sounds\\Song");
             MediaPlayer.Play(song);
-            Ghosts = new Gameobject[30];
+            Ghosts = new Gameobject[50];
             for(int c =0; c < Ghosts.Length;c++)
             {
                 Ghosts[c] = new Gameobject();
                 Ghosts[c].estvivant = true;
                 Ghosts[c].direction.X = de1.Next(1,5);
                 Ghosts[c].direction.Y= de1.Next(1,5);
+                Ghosts[c].sprite = Content.Load<Texture2D>("Ghost4.png");
             }
 
             #region projectilehero
 
             
 
-            projectilehero = new Gameobject[250];
+            projectilehero = new Gameobject[200];
             for(int a=0; a<projectilehero.Length;a++)
             {
                 projectilehero[a] = new Gameobject();
@@ -122,10 +124,7 @@ namespace Projet_monogame3
                 font = Content.Load<SpriteFont>("Font");
             }
 
-            for (int l = 0; l < Ghosts.Length;l++)
-            {
-                Ghosts[l].sprite = Content.Load<Texture2D>("Ghost4.png");
-            }
+            
 
             ToucheGhost = new Gameobject();
             ToucheGhost.estvivant = true;
@@ -165,7 +164,6 @@ namespace Projet_monogame3
                 {
 
                     Sonic.direction.X = 10;
-                    Sonic.position.X += 10;
                     Sonic.objetstate = Gameobjectanime.etats.rundroite;
                     background1.position.X -= 3;
                     background2.position.X -= 3;
@@ -179,7 +177,6 @@ namespace Projet_monogame3
                 if (keys.IsKeyDown(Keys.A))
                 {
                     Sonic.direction.X = -4;
-                    Sonic.position.X -= 10;
                     Sonic.objetstate = Gameobjectanime.etats.rungauche;
                     background1.position.X += 3;
                     background2.position.X += 3;
@@ -321,7 +318,7 @@ namespace Projet_monogame3
 
                     for (int k = 0; k < projectilehero.Length; k++)
                     {
-                        if (projectilehero[k].position.X >= fenetre.Width)
+                        if (projectilehero[k].position.X > fenetre.Right || projectilehero[k].position.X < fenetre.Left)
                         {
                             projectilehero[k].position.X = Sonic.position.X;
                             projectilehero[k].position.Y = Sonic.position.Y;
@@ -333,10 +330,10 @@ namespace Projet_monogame3
                 #region ghost
                 for (int v = 0; v < Ghosts.Length; v++)
                 {
-                    if (Ghosts[v].position.Y > fenetre.Bottom)
+                    if (Ghosts[v].position.Y > fenetre.Width || Ghosts[v].position.Y > fenetre.Height)
                     {
                         Ghosts[v].estvivant = false;
-                        Ghosts[v].position.X = de1.Next(0, 3000);
+                        Ghosts[v].position.X = de1.Next(0, 1200);
                         Ghosts[v].position.Y = 0;
                     }
                 }
@@ -357,7 +354,7 @@ namespace Projet_monogame3
                 {
                 cptback++;
                 }
-            seconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            
             if(Keyboard.GetState().IsKeyDown(Keys.P))
             {
                 Gameover = 5;
@@ -373,18 +370,18 @@ namespace Projet_monogame3
             {
                 Gameover++;
                 cpttoucheennemi = 0;
-                
-                for(int g=0;g<projectilehero.Length;g++)
+       
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.R))
+            {
+                for (int g = 0; g < projectilehero.Length; g++)
                 {
                     projectilehero[g].estvivant = false;
                 }
-
-
-                
             }
 
-            #region limites Sonic + Background + projectile hero           
-            if(Sonic.position.Y < 0)
+                #region limites Sonic + Background + projectile hero           
+                if (Sonic.position.Y < 0)
             {
                 Sonic.position.Y = 0;
             }
@@ -422,11 +419,12 @@ namespace Projet_monogame3
                 background1.position.Y = fenetre.Bottom-background1.sprite.Height;
             }
 
-            for (int i =0;i<projectilehero.Length;i++)
+          
+            if(ennemivivant ==100)
             {
-                if(projectilehero[i].position.X > fenetre.Width)
+                for (int j=0;j< Ghosts.Length;j++)
                 {
-                    projectilehero[i].estvivant = true;
+                    Ghosts[j].estvivant = true;
                 }
             }
             #endregion
@@ -450,7 +448,7 @@ namespace Projet_monogame3
         {
             for (int g = 0; g < Ghosts.Length; g++)
             {
-                if (cptennemi == 10 && Ghosts[g].estvivant==true)
+                if (cptennemi == 20 && Ghosts[g].estvivant==true)
                 {
                     Ghosts[g].position.Y = 0;
                     Ghosts[g].position.X =de1.Next(100,1500);
@@ -478,6 +476,7 @@ namespace Projet_monogame3
                         ToucheGhost.position = Ghosts[i].position;
                         cpttoucheennemi += 5;
                         scream.Play();
+                        ennemivivant--;
                         
                     }
                 }
@@ -509,6 +508,7 @@ namespace Projet_monogame3
                 spriteBatch.DrawString(font, gameTime.TotalGameTime.Minutes.ToString() + ", " + gameTime.TotalGameTime.Seconds.ToString() + ", " + gameTime.TotalGameTime.Milliseconds.ToString() + "", new Vector2(100, 50), Color.OrangeRed);
                 spriteBatch.DrawString(font, " Points: " + cpttoucheennemi.ToString(), new Vector2(600, 50), Color.OrangeRed);
                 spriteBatch.DrawString(font, " Vies: " + Gameover.ToString(), new Vector2(1000, 50), Color.OrangeRed);
+                spriteBatch.DrawString(font, "Press R to recharge your gun", new Vector2(1200, 50), Color.OrangeRed);
 
                 #region dessiner Sonic
                 if (Sonic.estvivant == true)
